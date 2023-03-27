@@ -69,7 +69,4 @@ CHIP ALU {
     Or8Way(in=out815,out=tmp2);
     Or(a=tmp1,b=tmp2,out=tmp3);
     Not(in=tmp3,out=zr);
-
-    // if (out < 0) set ng = 1
-    // And(a=out[0], b=true, out=ng);
 }
