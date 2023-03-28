@@ -15,5 +15,5 @@ CHIP Bit {
 
     PARTS:
     DFF(in=isload, out=formux, out=out);
-    Mux(a=formux, b=in, sel=load, ,out=isload);
+    Mux(a=formux, b=in, sel=load, out=isload);
 }
