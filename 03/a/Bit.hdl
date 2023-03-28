@@ -14,5 +14,6 @@ CHIP Bit {
     OUT out;
 
     PARTS:
-    // Put your code here:
+    DFF(in=isload, out=formux, out=out);
+    Mux(a=formux, b=in, sel=load, ,out=isload);
 }
