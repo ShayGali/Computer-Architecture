@@ -56,6 +56,7 @@ M=0
     @LOOP
     0;JMP // just jump, without condition
 
+// return sun
 (STOP)
     @sum // point to sum
     D=M  // put the value of sum to the D register
