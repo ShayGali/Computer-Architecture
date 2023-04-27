@@ -21,6 +21,9 @@
  * memory map. The behavior in these addresses is described in the 
  * Screen and Keyboard chip specifications given in the book.
  */
+ // 0x4000=16384 - 2^14
+ // 0x5FFF=24575 - 2^13 -1
+ // 0x6000=24576 - 2^14
 
 CHIP Memory {
     IN in[16], load, address[15];
@@ -28,4 +31,17 @@ CHIP Memory {
 
     PARTS:
     // Put your code here:
+    Not(in=address[15], out=nAddr15);
+    And(a=nAddr15, b=load, out=ram16L);
+    RAM16K(in=in, load=ram16L, address=address[0..14], out=ro);
+
+    Not(in=address[14], out=nAddr14);
+    And(a=nAddr14, b=address[15], out=add1514);
+    And(a=load, b=add1514, out=screenLoad);
+    Screen(in=in, load=screenLoad, address=[0..14], out=so);
+    Keyboard(out=ko);
+
+    Mux16(a=so, b=ko, sel=address[14], out=fo);
+    Mux(a=ro, b=fo, sel=address[15], out=out);
+
 }
