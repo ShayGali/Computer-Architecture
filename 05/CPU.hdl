@@ -39,5 +39,44 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // Put your code here:
+    // load and read data from the A register
+    And(a=instruction[15], b=instruction[5], out=CloadA);
+    Not(in=instruction[15], out=AInstruction);
+    Or(a=AInstruction, b=CloadA, out=loadA);
+    Mux16(a=instruction, b=outFromALU, sel=CloadA, out=inA);
+    ARegister(in=inA, load=loadA, out=aReg, out[0..14]=addressM);
+
+
+    // load and read data from the D register
+    And(a=instruction[15], b=instruction[4], out=loadD);
+    DRegister(in=outFromALU, load=loadD, out=dReg);
+
+    // is it A or M
+    Mux16(a=aReg, b=inM, sel=instruction[12], out=AorM);
+
+    //ALU
+    ALU(x=dReg, y=AorM,
+        zx=instruction[11], nx=instruction[10],zy=instruction[9],ny=instruction[8], f =instruction[7], no=instruction[6],
+        out=outFromALU,out=outM, zr=isZero, ng=isNeg);
+
+    And(a=instruction[15], b=instruction[3], out=writeM);
+
+    
+    // check for jump command
+    And(a=instruction[2], b=isNeg, out=p1);
+    And(a=instruction[1], b=isZero, out=p2);
+
+
+    Not(in=isNeg, out=isNotNeg);
+    Not(in=isZero, out=isNotZero);
+    And(a=isNotNeg, b=isNotZero, out=isPositive);
+    And(a=isPositive, b=instruction[0], out=p3);
+
+
+    Or(a=p1, b=p2, out=r);
+    Or(a=r, b=p3, out=jumpToA);
+
+    // if it C and need jump
+    And(a=instruction[15], b=jumpToA, out=loadPC);
+    PC(in=aReg, inc=true, load=loadPC, reset=reset, out[0..14]=pc);
 }

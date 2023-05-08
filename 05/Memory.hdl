@@ -30,18 +30,18 @@ CHIP Memory {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
-    Not(in=address[15], out=nAddr15);
-    And(a=nAddr15, b=load, out=ram16L);
-    RAM16K(in=in, load=ram16L, address=address[0..14], out=ro);
-
     Not(in=address[14], out=nAddr14);
-    And(a=nAddr14, b=address[15], out=add1514);
-    And(a=load, b=add1514, out=screenLoad);
-    Screen(in=in, load=screenLoad, address=[0..14], out=so);
+    And(a=nAddr14, b=load, out=ram16L);
+    RAM16K(in=in, load=ram16L, address=address[0..13], out=ro);
+
+    Not(in=address[13], out=nAddr13);
+    And(a=nAddr13, b=address[14], out=add1413);
+    And(a=load, b=add1413, out=screenLoad);
+    Screen(in=in, load=screenLoad, address=address[0..12], out=so);
+
     Keyboard(out=ko);
 
-    Mux16(a=so, b=ko, sel=address[14], out=fo);
-    Mux(a=ro, b=fo, sel=address[15], out=out);
+    Mux16(a=so, b=ko, sel=address[13], out=fo);
+    Mux16(a=ro, b=fo, sel=address[14], out=out);
 
 }
